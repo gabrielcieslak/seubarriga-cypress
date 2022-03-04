@@ -1,45 +1,57 @@
+import cadastroElement from "../support/pageObjects/cadastroElements"
+
+const cadastro = new cadastroElement()
+const numberId = () => Cypress._.random(0, 1e6)
+const id = numberId()
+
+const  userValido = {
+    nome: 'teste' + id,
+    email: 'teste' + id + '@teste.com',
+    senha: id
+}
 
 describe('Teste de cadastro',()=>{
-    const nomeMensagem = ''
-    const emailMensagem = ''
-    const senhaMensagem = ''
-    const sucesso = ''
+    const nomeMensagem = 'Nome é um campo obrigatório'
+    const emailMensagem = 'Email é um campo obrigatório'
+    const senhaMensagem = 'Senha é um campo obrigatório'
+    const sucessoMensagem = 'Usuário inserido com sucesso'
 
     before(()=>{
-        cy.visit('/')
-        cy.url().should('eq','/cadastro')
-    })
-    describe('Cadastro valido',()=>{
-        it('Preencher dados',()=>{
-            cadastro.nomeInput().type(userValido.nome)
-            cadastro.emailInput().type(userValido.email)
-            cadastro.senhaInput().type(userValido.senha)
-            cadastro.mensagemSucesso().should('be.visible').to.contain(sucesso)
-        })
-    })
+        cy.visit('/cadastro')        
+    }) 
     describe('Cadastro invalido',()=>{
         describe('Cadastro com dados em branco',()=>{
-            it('Inserir nome em branco',()=>{
-                cadastro.nomeInput().type('')
-                cadastro.cadastrarBotao().click()
-                cadadastro.nomeMensagemObrigatorio().should('be.visible').to.contain(nomeMensagem)
+            it('Manter nome em branco',()=>{                
+                cadastro.buttonCadastrar().click()
+                cadastro.alertMensagem().should('be.visible')
+                cadastro.alertMensagem().contains(nomeMensagem)
             })
-            it('Inserir email em branco',()=>{
-                cadastro.emailInput().type('')
-                cadastro.cadastrarBotao().click()
-                cadadastro.emailMensagemObrigatorio().should('be.visible').to.contain(emailMensagem)
+            it('Manter email em branco',()=>{                
+                cadastro.buttonCadastrar().click()
+                cadastro.alertMensagem().should('be.visible')
+                cadastro.alertMensagem().contains(emailMensagem)
             })
-            it('Inserir senha em branco',()=>{
-                cadastro.senhaInput().type('')
-                cadastro.cadastrarBotao().click()
-                cadadastro.senhaMensagemObrigatorio().should('be.visible').to.contain(senhaMensagem)
+            it('Manter senha em branco',()=>{                
+                cadastro.buttonCadastrar().click()
+                cadastro.alertMensagem().should('be.visible')
+                cadastro.alertMensagem().contains(senhaMensagem)
             })
+        })        
+    })
+    describe('Cadastro valido',()=>{
+        it('Preencher Nome',()=>{
+            cadastro.inputNome().type(userValido.nome)            
         })
-        describe('Cadastro com email em formato errado',()=>{
-            it('Inserir email fora do formato padrão',()=>{
-                cadastro.emailInput().type(userValido.nome)
-                cadastro.tipEmailFormato().should('be.visible').to.contain(emailFormatoError)
-            })
+        it('Preencher Email',()=>{            
+            cadastro.inputEmail().type(userValido.email)
+        })
+        it('Preencher Senha',()=>{
+            cadastro.inputSenha().type(userValido.senha)         
+        })
+        it('Confirmar',()=>{
+            cadastro.buttonCadastrar().click()
+            cadastro.alertMensagem().should('be.visible')
+            cadastro.alertMensagem().contains(sucessoMensagem)           
         })
     })
 })

@@ -1,3 +1,4 @@
 {
-    "baseUrl": "https://seubarriga.wcaquino.me"
+    "baseUrl": "https://seubarriga.wcaquino.me",
+    "cy:open": "run cypress open"
 }

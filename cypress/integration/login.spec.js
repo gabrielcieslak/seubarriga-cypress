@@ -1,61 +1,60 @@
-describe('Teste login ',()=>{    
 
-    const emailError = 'ta errado mano'
-    const senhaError = 'ta errado mano'
-    
-    const loginMensagemErro = ''
-    const emailInvalido = ''
-    const senhaInvalido = ''   
-    before(()=>{
-        cy.visit('/')
+    import loginElement from "../support/pageObjects/loginElements"
+    const login = new loginElement()
+    const numberId = () => Cypress._.random(0, 1e6)
+    const id = numberId()
+    const  userValido = {
+        nome: 'teste' + id,
+        email: 'teste' + id + '@teste.com',
+        senha: id
+    }
+    const loginSucesso = 'Bem vindo, ' + userValido.nome +'!'
+    const loginErro = 'Problemas com o login do usuário'
+    const emailError = 'Email é um campo obrigatório'
+    const senhaError = 'Senha é um campo obrigatório'
+describe('Teste login ',()=>{    
+    before(()=>{                
         cy.cadastro(userValido)
-        cy.url().should('eq','/logar')
     })
-    describe('Login invalido',()=>{
-        describe('Login com email e senha invalida',()=>{
-            it('Inserir email fora do formato',()=>{
-                login.emailInput().type(emailInvalido)
-                login.entrarBotao().click()
-                login.tipEmailFormato().should('be.visible').to.contain(emailFormatoError)       
-            })
+    describe('Login com usuário e senha em branco',()=>{
+        it('Entrar sem preencher campos',()=>{
+            login.buttonEntrar().click()
         })
-        describe('Login com email em formato correto e senha errada',()=>{
-            it('Inserir email valido',()=>{
-                login.emailInput().type(userValido.email)
-            })
-            it('Inserir senha errada',()=>{
-                login.senhaIput().type(senhaInvalido)
-                login.entrarBotao().click()
-                login.mensagemLoginErro().should('be.visible').to.contain(loginMensagemErro) 
-            })
-        })            
-        describe('Login com email e senha em branco',()=>{
-            it('Inserir email em branco',()=>{
-                login.emailInput().type('')
-                login.entrarBotao().click()
-                login.mensagemEmailErro().should('be.visible').to.contain(emailError)
-            })
-            it('Inserir senha em branco',()=>{
-                login.senhaIput().type('')
-                login.entrarBotao().click()
-                login.mensagemSenhaErro().should('be.visible').to.contain(senhaError) 
-            })
+        it('Validar erros',()=>{
+            login.alertMensagem().should('be.visible')
+            login.alertMensagem().contains(emailError)
+            login.alertMensagem().contains(senhaError)
         })
     })
-    describe('Login valido',()=>{
-        describre('Login com usuário valido',()=>{
-            it('Inserir email valido',()=>{
-                login.emailInput().type(userValido.email)
-            })
-            it('Inserir senha válida',()=>{
-                login.emailInput().type(userValido.senha)
-            })
-            it('Acessar e validar url',()=>{
-                login.entrarBotao().click()
-                cy.url().should('eq','/home')
-            })            
+    describe('Login com usuário invalido',()=>{
+        it('Inserir email correto',()=>{
+            login.inputEmail().type(userValido.email)
+        })
+        it('Inserir senha invalida ',()=>{
+            login.inputSenha().type('blabla')
+        })
+        it('Entrar',()=>{
+            login.buttonEntrar().click()
+        })
+        it('Validar erro',()=>{
+            login.alertMensagem().should('be.visible')
+            login.alertMensagem().contains(loginErro)
         })
     })
-    
+    describe('Login com usuário valido',()=>{
+        it('Inserir email válido',()=>{
+            login.inputEmail().type(userValido.email)
+        })
+        it('Inserir senha válida',()=>{
+            login.inputSenha().type(userValido.senha)
+        })
+        it('Entrar',()=>{
+            login.buttonEntrar().click()
+        })
+        it('Validar sucesso',()=>{
+            login.alertMensagem().should('be.visible')
+            login.alertMensagem().contains(loginSucesso)
+        })
+    })
 
 })
