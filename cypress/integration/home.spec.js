@@ -8,24 +8,20 @@ const  userValido = {
     senha: id
 }
 describe('Teste home page',()=>{
-    before(()=>{                
-        cy.cadastro(userValido)        
+    before(()=>{        
+        cy.novoUsuario()                
     })
-    beforeEach(()=>{
-        cy.login(userValido)
-    })
-
     describe('Validar itens da página',()=>{
         it('Tabela inicial vazia',()=>{
             cy.get('#tabelaSaldo > tbody').should(($table)=>{
                 expect($table).to.have.length(1)
             })
         })
-        it('Tabela inicial com uma conta cadastrada',()=>{            
+        it('Tabela inicial com uma conta cadastrada',()=>{ 
+            cy.login()                      
             cy.adicionarConta()
-            cy.get('tbody').should(($table)=>{
-                expect($table).to.have.length(2)
-            })
+            cy.contains('ContaTeste')
+            
         })
 
     })

@@ -22,7 +22,18 @@ const  userValido = {
         senha: id
     }
 
-Cypress.Commands.add('login', (userValido) => { 
+const date = new Date()
+const dataAtual = date.getDate().toString().padStart(2,'0')+'/'+ date.getMonth().toString().padStart(2,'0') +'/' + date.getFullYear();
+const movimetacaoValida = {        
+    dataMovimetacao : dataAtual,
+    dataPagamento : dataAtual,
+    descricao : 'teste movimentacao',
+    interessado: 'teste interessado',
+    valor: 500,
+    
+}
+
+Cypress.Commands.add('login', () => { 
     cy.visit('/')
     login.inputEmail().type(userValido.email)
     login.inputSenha().type(userValido.senha)
@@ -41,11 +52,35 @@ Cypress.Commands.add('cadastro', (userValido) => {
 Cypress.Commands.add('adicionarConta', () => {
     cy.visit('/addConta')
     conta.inputNome().type('ContaTeste')
-    conta.buttonSalver().click()
+    conta.buttonSalvar().click()
 
 })
+Cypress.Commands.add('listarConta', () => {
+    cy.visit('/contas') 
+})
+
 Cypress.Commands.add('criarMovimentacao', (movimentacaoValida) => {
+    cy.visit('/movimentacao')
+    movimentacao.inputDataMovimentacao().type(movimetacaoValida.dataMovimetacao)
+    movimentacao.inputDataPagamento().type(movimetacaoValida.dataPagamento)
+    movimentacao.inputDescricao().type(movimetacaoValida.descricao)
+    movimentacao.inputInteressado().type(movimetacaoValida.interessado)
+    movimentacao.inputValor().type(movimetacaoValida.valor)
+    movimentacao.buttonSalvar().click()
 
+})
+Cypress.Commands.add('listarConta', () => {
+    cy.visit('/contas') 
+})
+Cypress.Commands.add('buscarResumo', () => {
+    let mesAtual = date.getMonth().toString().padStart(2,'0')    
+    cy.visit('/extrato') 
+    resumo.selectMes().select(mesAtual)    
+    resumo.buttonBuscar().click()
+})
 
+Cypress.Commands.add('novoUsuario', () => {
+    cy.cadastro(userValido)
+    cy.login(userValido)
 })
 

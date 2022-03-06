@@ -2,7 +2,7 @@ class contaElement {
     inputNome(){
         return cy.get('#nome')
     }
-    buttonSalver(){
+    buttonSalvar(){
         return cy.get('.btn')
     }
 
